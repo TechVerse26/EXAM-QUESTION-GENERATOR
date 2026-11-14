@@ -1,3 +1,52 @@
+EXAM MASTER – Online Exam Management System
+
+EXAM MASTER is a modern, feature-rich Online Exam Management System and Question Paper Builder designed for schools, colleges, universities, coaching centers, madrasas, and educational institutions.
+
+It provides a centralized platform for creating professional examination question papers, managing question banks, organizing examinations, generating AI-powered questions, and managing educational institutions.
+
+Key Features
+
+- Online Question Paper Maker & Builder
+- MCQ, CQ, Short Questions, Broad Questions and Multiple Question Types
+- AI-Powered Question Generator
+- Smart Question Bank Management
+- Customizable Exam Paper Templates
+- Bengali & English Question Paper Support
+- Mathematical Equations and Rich Text Editor
+- Multiple Question Paper Sets (A, B, C, D, E, F)
+- Automatic Marks Calculation
+- Answer Key Management
+- PDF Printing and Microsoft Word Export
+- Excel, CSV, DOCX and PDF Question Import
+- Multi-Institution Management
+- Teacher and Role Management
+- Examination Workflow and Approval System
+- Subscription and Usage Management
+- Analytics and Activity Tracking
+- Firebase Authentication and Database Integration
+
+Who Can Use EXAM MASTER?
+
+- Schools and Colleges
+- Universities
+- Coaching Centers
+- Madrasas
+- Educational Institutions
+- Examination Departments
+- Teachers and Question Paper Setters
+
+Technologies Used
+
+React.js, Vite, Tailwind CSS, Firebase, Firestore, Firebase Cloud Functions, Tiptap Editor, KaTeX, Zustand and Recharts.
+
+Search Keywords
+
+Online Exam Management System, Exam Management Software, Question Paper Maker, Question Paper Generator, Online Question Paper Builder, MCQ Question Generator, AI Question Generator, Question Bank Management System, School Management Software, College Exam Software, Education Management System, Digital Examination System, Bengali Question Paper Maker, Academic Management Software.
+
+EXAM MASTER – Simplifying Examination Management and Question Paper Creation.
+
+
+
 # EXAM MASTER
 
 Question paper builder, question bank and examination management for schools, colleges, madrasas, coaching centers and teachers.
