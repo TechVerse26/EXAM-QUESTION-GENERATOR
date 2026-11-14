@@ -11,7 +11,7 @@
 
 ## 🎥 Product Walkthrough & How to Use
 
-**Tutorial video:** `ADD_YOUTUBE_OR_VIMEO_VIDEO_URL_HERE`
+**Tutorial video:** `[ADD_YOUTUBE_OR_VIMEO_VIDEO_URL_HERE](https://youtu.be/br8Hp8MK8dk?si=_yIdf_bMItHpyDrZ)`
 
 Replace the placeholder above with the published walkthrough video URL. For a YouTube thumbnail that opens the video, replace `VIDEO_ID` in this optional snippet and remove the surrounding HTML comment markers:
 
