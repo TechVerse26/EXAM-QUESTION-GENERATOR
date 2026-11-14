@@ -10,6 +10,7 @@ import ForgotPassword from '../pages/Authentication/ForgotPassword.jsx';
 import VerifyEmail from '../pages/Authentication/VerifyEmail.jsx';
 import Onboarding from '../pages/Institution/Onboarding.jsx';
 import NotFound from '../pages/NotFound.jsx';
+import { isStandalone } from '../pwa/install.js';
 
 const Dashboard = lazy(() => import('../pages/Dashboard/index.jsx'));
 const PaperLibrary = lazy(() => import('../pages/PaperLibrary/index.jsx'));
@@ -30,11 +31,14 @@ const PrintPage = lazy(() => import('../pages/Print/index.jsx'));
 
 const guard = (perm, el) => <Can perm={perm}>{el}</Can>;
 
+// Installed app (home-screen icon): open straight into the dashboard. RequireAuth sends signed-out users to the login page.
+const Home = () => (isStandalone() ? <Navigate to="/app/dashboard" replace /> : <Landing />);
+
 export default function AppRoutes() {
   return (
     <Suspense fallback={<Splash />}>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

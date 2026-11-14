@@ -1,75 +1,3 @@
-<p align="center">
-  <img src="public/assets/rdm/exam-master-cover.png" alt="EXAM MASTER — Online Exam Management System" width="100%" />
-</p>
-
-<p align="center">
-  <strong>Build question papers. Manage question banks. Organize examinations.</strong><br />
-  A platform for schools, colleges, universities, coaching centers, madrasas, teachers and educational institutions.
-</p>
-
-> **Cover note:** The banner is illustrative artwork, not a screenshot of the live application.
-
-## 🎥 Product Walkthrough & How to Use
-
-**Tutorial video:** `https://youtu.be/br8Hp8MK8dk?si=_yIdf_bMItHpyDrZ`
-
-Replace the placeholder above with the published walkthrough video URL. For a YouTube thumbnail that opens the video, replace `br8Hp8MK8dk` in this optional snippet and remove the surrounding HTML comment markers:
-
-<!--
-[![Watch the EXAM MASTER walkthrough](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
--->
-
----
-
-EXAM MASTER – Online Exam Management System
-
-EXAM MASTER is a modern, feature-rich Online Exam Management System and Question Paper Builder designed for schools, colleges, universities, coaching centers, madrasas, and educational institutions.
-
-It provides a centralized platform for creating professional examination question papers, managing question banks, organizing examinations, generating AI-powered questions, and managing educational institutions.
-
-Key Features
-
-- Online Question Paper Maker & Builder
-- MCQ, CQ, Short Questions, Broad Questions and Multiple Question Types
-- AI-Powered Question Generator
-- Smart Question Bank Management
-- Customizable Exam Paper Templates
-- Bengali & English Question Paper Support
-- Mathematical Equations and Rich Text Editor
-- Multiple Question Paper Sets (A, B, C, D, E, F)
-- Automatic Marks Calculation
-- Answer Key Management
-- PDF Printing and Microsoft Word Export
-- Excel, CSV, DOCX and PDF Question Import
-- Multi-Institution Management
-- Teacher and Role Management
-- Examination Workflow and Approval System
-- Subscription and Usage Management
-- Analytics and Activity Tracking
-- Firebase Authentication and Database Integration
-
-Who Can Use EXAM MASTER?
-
-- Schools and Colleges
-- Universities
-- Coaching Centers
-- Madrasas
-- Educational Institutions
-- Examination Departments
-- Teachers and Question Paper Setters
-
-Technologies Used
-
-React.js, Vite, Tailwind CSS, Firebase, Firestore, Firebase Cloud Functions, Tiptap Editor, KaTeX, Zustand and Recharts.
-
-Search Keywords
-
-Online Exam Management System, Exam Management Software, Question Paper Maker, Question Paper Generator, Online Question Paper Builder, MCQ Question Generator, AI Question Generator, Question Bank Management System, School Management Software, College Exam Software, Education Management System, Digital Examination System, Bengali Question Paper Maker, Academic Management Software.
-
-EXAM MASTER – Simplifying Examination Management and Question Paper Creation.
-
-
-
 # EXAM MASTER
 
 Question paper builder, question bank and examination management for schools, colleges, madrasas, coaching centers and teachers.
@@ -152,6 +80,11 @@ Cloud Functions (AI generator, payments) cannot run on GitHub and still need the
 4. `.github/workflows/deploy.yml` builds on every push to `main` and publishes to `https://USER.github.io/REPO/`. It sets `BASE_PATH`
    (Vite `base`) by itself, so the repository can have any name, and copies `index.html` to `404.html` so deep links and refreshes work.
 5. Firebase console, *Authentication, Settings, Authorized domains*: add `USER.github.io`.
+
+The app is also a PWA. On a phone or desktop browser the **Install app** button (or the browser's *Add to Home Screen* / *Install*) puts it on the home
+screen, where it opens in its own window straight into the dashboard. The PWA files are `public/manifest.webmanifest`, `public/icons/` and `public/sw.js`.
+The service worker only caches the app's own build files and fonts; Firebase, Google APIs and uploads always go to the network. The workflow stamps a new
+build id into `sw.js` on every deploy so installed apps pick up the new version by themselves. It is registered in production builds only (not `npm run dev`).
 
 ## Commands
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, Library, Sparkles, ArrowUpDown, LayoutTemplate, Palette, KeyRound, GraduationCap, Users, Activity, CreditCard, Bell, Settings, Menu, X, Moon, Sun, LogOut } from 'lucide-react';
 import Logo from '../components/common/Logo.jsx';
+import InstallButton from '../components/common/InstallButton.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { useCurrent } from '../hooks/useCurrent.js';
 import { useAuthStore } from '../store/authStore.js';
@@ -86,6 +87,7 @@ export default function DashboardLayout() {
             )}
             {role && <p className="truncate text-xs text-muted">{ROLE_LABELS[role] ? ROLE_LABELS[role][lang] : role}</p>}
           </div>
+          <InstallButton />
           <button type="button" className="btn btn-ghost btn-sm" onClick={() => setLang(lang === 'bn' ? 'en' : 'bn')}>{lang === 'bn' ? 'English' : 'বাংলা'}</button>
           <button type="button" className="btn btn-ghost btn-sm btn-icon" onClick={toggleTheme} aria-label={t('Toggle theme')}>{theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</button>
           <NavLink to="/app/notifications" className="btn btn-ghost btn-sm btn-icon relative" aria-label={t('Notifications')}>
