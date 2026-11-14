@@ -1,3 +1,26 @@
+<p align="center">
+  <img src="assets/exam-master-cover.png" alt="EXAM MASTER — Online Exam Management System" width="100%" />
+</p>
+
+<p align="center">
+  <strong>Build question papers. Manage question banks. Organize examinations.</strong><br />
+  A platform for schools, colleges, universities, coaching centers, madrasas, teachers and educational institutions.
+</p>
+
+> **Cover note:** The banner is illustrative artwork, not a screenshot of the live application.
+
+## 🎥 Product Walkthrough & How to Use
+
+**Tutorial video:** `ADD_YOUTUBE_OR_VIMEO_VIDEO_URL_HERE`
+
+Replace the placeholder above with the published walkthrough video URL. For a YouTube thumbnail that opens the video, replace `VIDEO_ID` in this optional snippet and remove the surrounding HTML comment markers:
+
+<!--
+[![Watch the EXAM MASTER walkthrough](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+-->
+
+---
+
 EXAM MASTER – Online Exam Management System
 
 EXAM MASTER is a modern, feature-rich Online Exam Management System and Question Paper Builder designed for schools, colleges, universities, coaching centers, madrasas, and educational institutions.
