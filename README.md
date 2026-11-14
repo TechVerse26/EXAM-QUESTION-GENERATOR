@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/exam-master-cover.png" alt="EXAM MASTER — Online Exam Management System" width="100%" />
+  <img src="assets/rdm/exam-master-cover.png" alt="EXAM MASTER — Online Exam Management System" width="100%" />
 </p>
 
 <p align="center">
