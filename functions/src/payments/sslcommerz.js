@@ -10,7 +10,7 @@ const STORE_ID = defineSecret('SSLC_STORE_ID');
 const STORE_PASS = defineSecret('SSLC_STORE_PASS');
 const APP_URL = defineString('APP_URL');                 // e.g. https://your-app.vercel.app
 const CALLBACK_BASE_URL = defineString('CALLBACK_BASE_URL'); // URL of the sslcommerzCallback function
-const LIVE = defineString('SSLC_LIVE', { default: 'true' });
+const LIVE = defineString('SSLC_LIVE', { default: 'false' });
 
 // Mirror of src/constants/plans.js (BDT per month)
 const PRICES = { starter: 500, professional: 1500, institution: 4000 };
