@@ -9,7 +9,9 @@ import { useI18n } from '../../i18n/index.jsx';
 import { useCurrent, useAcademicLists } from '../../hooks/useCurrent.js';
 import { useBank } from '../../store/bankStore.js';
 import { namesOf } from '../../store/academicStore.js';
-import { generateQuestionsAI, aiToQuestions } from '../../services/aiService.js';
+import { generateQuestionsAI, aiToQuestions, aiMode } from '../../services/aiService.js';
+import { getAiKey } from '../../services/aiKey.js';
+import KeyPanel from './KeyPanel.jsx';
 import { createQuestionsBulk } from '../../services/questionService.js';
 import { checkLimit, invalidateUsage } from '../../services/planService.js';
 import { previewText } from '../../utils/question.js';
@@ -30,20 +32,31 @@ export default function AIGenerator() {
   const [sel, setSel] = useState([]);
   const [edit, setEdit] = useState(null);
   const [saving, setSaving] = useState(false);
+  // Default mode: free Gemini with the user's own key, called from the browser (no Cloud Functions, no billing).
+  const direct = aiMode() === 'direct';
+  const uid = user ? user.uid : '';
+  const [hasKey, setHasKey] = useState(() => !direct || !!getAiKey(uid));
+  const [keyOpen, setKeyOpen] = useState(() => direct && !getAiKey(uid));
+  const [usedModel, setUsedModel] = useState('');
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }));
 
   const generate = async () => {
     if (!f.subject.trim()) { toast.error(t('Enter a subject.')); return; }
+    if (direct && !hasKey) { setKeyOpen(true); toast.info(t('Add your free Gemini key first.')); return; }
     setBusy(true);
     try {
-      const items = await generateQuestionsAI({ institutionId, ...f, count: Number(f.count), marks: Number(f.marks) });
+      const { questions: items, model } = await generateQuestionsAI({ institutionId, ...f, count: Number(f.count), marks: Number(f.marks) }, { uid });
+      setUsedModel(model || '');
       const qs = aiToQuestions(items, { lang: f.language, defaults: { className: f.className, subject: f.subject, chapter: f.chapter, topic: f.topic, difficulty: f.difficulty } }).map((x, i) => ({ ...x, uid: `${Date.now()}-${i}` }));
       setResults(qs);
       setSel(qs.map((x) => x.uid));
       if (!qs.length) toast.info(t('The AI returned no usable questions. Try again or adjust the request.'));
     } catch (e) {
+      if (e && e.code === 'no-key') setHasKey(false);
+      if (e && ['no-key', 'bad-key', 'leaked', 'forbidden'].includes(e.code)) setKeyOpen(true);
       const unavailable = ['functions/not-found', 'functions/unavailable', 'functions/internal'].includes(e.code);
-      toast.error(unavailable ? t('AI generation is not set up for this project. Creating questions manually still works.') : t(e.message));
+      const detail = e && e.code === 'unknown' && e.detail ? ` (${String(e.detail).slice(0, 140)})` : '';
+      toast.error(unavailable ? t('AI generation is not set up for this project. Creating questions manually still works.') : `${t(e.message, e.params)}${detail}`);
     } finally { setBusy(false); }
   };
 
@@ -73,6 +86,7 @@ export default function AIGenerator() {
   return (
     <div>
       <PageHeader title={t('AI question generator')} subtitle={t('Drafts only. Review and edit every question and answer before saving.')} />
+      {direct && <KeyPanel uid={uid} open={keyOpen} onOpenChange={setKeyOpen} onKeyChange={setHasKey} />}
       <div className="panel mb-4 p-4">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Field label={t('Class')}><Input list="ai-class" value={f.className} onChange={set('className')} /></Field>
@@ -101,7 +115,7 @@ export default function AIGenerator() {
       {results.length > 0 && (
         <div className="panel">
           <div className="flex flex-wrap items-center gap-2 border-b border-line p-3">
-            <strong className="text-sm">{t('{n} generated', { n: results.length })}</strong><Badge tone="warn">{t('Not reviewed')}</Badge>
+            <strong className="text-sm">{t('{n} generated', { n: results.length })}</strong><Badge tone="warn">{t('Not reviewed')}</Badge>{usedModel && <span className="text-xs text-muted">{usedModel}</span>}
             <Button size="sm" variant="primary" className="ml-auto" disabled={!sel.length} loading={saving} onClick={saveSelected}>{t('Save {n} to question bank', { n: sel.length })}</Button>
           </div>
           {results.map((x) => (

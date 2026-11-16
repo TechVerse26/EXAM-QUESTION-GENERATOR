@@ -2,16 +2,28 @@ import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase/config.js';
 import { docFromText } from '../utils/richtext.js';
 import { newId } from '../utils/id.js';
+import { generateQuestionsDirect, GeminiError, MSG } from './gemini.js';
+import { getAiKey, getAiModel } from './aiKey.js';
 
-export async function generateQuestionsAI(payload) {
-  const fn = httpsCallable(functions, 'generateQuestions', { timeout: 120000 });
-  const res = await fn(payload);
-  return (res.data && res.data.questions) || [];
+// 'direct' (default): the browser talks to Google Gemini with the user's own free key. Needs no Cloud Functions and no billing.
+// 'functions': the original Cloud Function (needs the Firebase Blaze plan and a GEMINI_API_KEY secret). Set VITE_AI_MODE=functions.
+export const aiMode = () => (import.meta.env && import.meta.env.VITE_AI_MODE === 'functions' ? 'functions' : 'direct');
+
+// Resolves to { questions, model } (raw items; nothing is saved here).
+export async function generateQuestionsAI(payload, { uid } = {}) {
+  if (aiMode() === 'functions') {
+    const fn = httpsCallable(functions, 'generateQuestions', { timeout: 120000 });
+    const res = await fn(payload);
+    return { questions: (res.data && res.data.questions) || [], model: '' };
+  }
+  const key = getAiKey(uid);
+  if (!key) throw new GeminiError('no-key', MSG.noKey);
+  return generateQuestionsDirect({ key, payload, preferredModel: getAiModel(uid) });
 }
 
 const LETTERS_BN = ['ক', 'খ', 'গ', 'ঘ', 'ঙ', 'চ'];
 
-// Maps the plain-text JSON returned by the function into editable question objects (nothing is saved here).
+// Maps the plain-text JSON returned by the AI into editable question objects (nothing is saved here).
 export function aiToQuestions(items, { lang = 'bn', defaults = {} } = {}) {
   return items.map((it) => {
     const meta = { difficulty: it.difficulty || defaults.difficulty || 'medium', className: defaults.className || '', subject: defaults.subject || '', chapter: defaults.chapter || '', topic: defaults.topic || '', group: '', department: '', tags: ['ai'] };

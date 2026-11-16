@@ -21,7 +21,7 @@ npm run dev                             # http://localhost:5173
 
 - Node.js 18 or newer (20 recommended; Cloud Functions use Node 20)
 - A Firebase project (free Spark plan is enough for the app; **Cloud Functions need the Blaze plan**)
-- Optional: Cloudinary account (image upload), Gemini API key (AI generator), SSLCommerz sandbox account (payments)
+- Optional: Cloudinary account (image upload), a free Google Gemini key for each user (AI generator, section 3c), SSLCommerz sandbox account (payments)
 
 ## 1. Firebase setup
 
@@ -42,19 +42,21 @@ npm run dev                             # http://localhost:5173
    `firestore.indexes.json` when the console links them from an error message. Indexes take a few minutes to build.
 6. Start the app, register, verify your email, then create your institution on the onboarding page.
 
-### Cloud Functions (optional: AI generator, payments)
+### Cloud Functions (optional: payments, or the server-side AI generator)
+
+The AI generator does **not** need these: by default it runs in the browser with each user's own free Gemini key (section 3c).
 
 ```bash
 cd functions && npm install && cd ..
-firebase functions:secrets:set GEMINI_API_KEY          # AI generator
+firebase functions:secrets:set GEMINI_API_KEY          # AI generator, only with VITE_AI_MODE=functions (section 3c)
 firebase functions:secrets:set SSLC_STORE_ID           # payments (sandbox first)
 firebase functions:secrets:set SSLC_STORE_PASS
 firebase deploy --only functions                        # prompts for APP_URL and CALLBACK_BASE_URL
 ```
 
-- `GEMINI_MODEL` (default `gemini-2.5-flash`) can be set in `functions/.env` if that model name is retired.
+- `GEMINI_MODEL` defaults to `gemini-2.5-flash`, which Google no longer gives to new projects. Set `GEMINI_MODEL` in `functions/.env` to a current model name from <https://ai.google.dev/gemini-api/docs/models> (for example `gemini-3.5-flash-lite`).
 - Set `VITE_FUNCTIONS_REGION` in `.env` if you deploy functions outside `us-central1`.
-- The manual workflow works without any function. The AI page and the *Choose* plan buttons show a clear message when functions are missing.
+- The manual workflow and the AI generator work without any function. The *Choose* plan buttons show a clear message when functions are missing.
 - Platform super admin: `GOOGLE_APPLICATION_CREDENTIALS=key.json node functions/scripts/set-super-admin.js <uid>` (there is no super admin screen yet).
 
 ## 2. Image hosting (optional)
@@ -72,7 +74,7 @@ small maximum size), then set `VITE_CLOUDINARY_CLOUD_NAME` and `VITE_CLOUDINARY_
 ## 3b. Deploy the front end to GitHub Pages (alternative to Vercel)
 
 GitHub Pages hosts static files only, which is all the front end needs (Firebase Auth and Firestore are called straight from the browser).
-Cloud Functions (AI generator, payments) cannot run on GitHub and still need the Blaze plan.
+Cloud Functions (payments) cannot run on GitHub and still need the Blaze plan. The AI generator does not need them (section 3c).
 
 1. The Firebase web config lives in `.env.production` (public identifiers, not secrets). Edit it if you switch Firebase projects.
 2. Create a **public** GitHub repository and push this folder to its `main` branch.
@@ -85,6 +87,24 @@ The app is also a PWA. On a phone or desktop browser the **Install app** button 
 screen, where it opens in its own window straight into the dashboard. The PWA files are `public/manifest.webmanifest`, `public/icons/` and `public/sw.js`.
 The service worker only caches the app's own build files and fonts; Firebase, Google APIs and uploads always go to the network. The workflow stamps a new
 build id into `sw.js` on every deploy so installed apps pick up the new version by themselves. It is registered in production builds only (not `npm run dev`).
+
+## 3c. AI question generator for free (no card, no Cloud Functions)
+
+By default (`VITE_AI_MODE` unset or `direct`) the AI page calls Google Gemini straight from the browser with the user's **own free key**.
+Nothing runs on a server, so the Firebase Spark plan is enough and no payment card is needed.
+
+1. Open the *AI* page. The *Free AI key* box opens by itself.
+2. Open <https://aistudio.google.com/apikey>, sign in with a Google account, create an API key and copy it.
+3. Paste it into the box and tap *Save key*. The app checks the key and shows which model it will use.
+
+Good to know:
+
+- The key is saved in that browser only, per signed-in user. It is never sent to Firestore and never goes into the repository (a Gemini key committed to a public repository gets switched off by Google). Each teacher creates their own key; sharing one key shares its free quota.
+- Google sets the free limits per project and per model and changes them from time to time. When one model is used up the app tries the next Flash or Flash-Lite model the key can use, and if all are used up it says so (the daily limit resets around 1 to 2 PM Bangladesh time). Asking for 10 to 20 questions at once uses fewer requests than many small asks.
+- Google may use free-tier prompts to improve its products, so do not paste private student data.
+- Model names are read from the key (`GET /v1beta/models`), so a retired name such as `gemini-2.5-flash` cannot break the page. The *Model* menu in the key box pins one model; leave it on *Automatic* normally.
+- Plan credits (`aiCredits`) are not applied in this mode. `VITE_AI_MODE=functions` brings back the original Cloud Function (needs the Blaze plan, the `GEMINI_API_KEY` secret and a current `GEMINI_MODEL`).
+- Plan limits for papers, questions and members are checked in the browser against `institutions/<id>.plan`. New institutions start on `free`. With no payment flow you can lift them yourself in the Firebase console: *Firestore Database*, `institutions`, your institution, set the field `plan` to `enterprise` (unlimited).
 
 ## Commands
 

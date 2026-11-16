@@ -19,7 +19,8 @@ The project was written in an environment without internet access, so `npm insta
 | `npm install` and `vite build` with the real packages | A wrong third-party API call or version would only show up on first install |
 | Firebase Auth, Firestore reads/writes, Firestore security rules, indexes | Rules were reviewed by hand, never run in the emulator. Test them with the emulator before real data goes in |
 | Tiptap editor, dnd-kit drag and drop, real KaTeX output, Tailwind compilation | Not executable here |
-| Cloudinary upload, AI generation (Gemini), SSLCommerz payment, XLSX/DOCX/PDF import with the real libraries | Written from documentation, never run |
+| Cloudinary upload, SSLCommerz payment, XLSX/DOCX/PDF import with the real libraries | Written from documentation, never run |
+| AI generation with the real Google Gemini API | The default mode (browser, user's own free key) was tested in Chromium against a fake Gemini server and with unit tests, never against Google itself. The Cloud Function mode was never run |
 | Phones, tablets, other browsers | Only layout logic was checked, no device testing |
 
 ## 2. Feature matrix against the master prompt
@@ -36,7 +37,7 @@ Legend: **Done** = implemented, **Basic** = works but simple, **Missing** = not 
 | 8 Question editors | Done | MCQ (single/multiple, any option count, negative marking, fixed options), CQ and stimulus family (CQ, passage, case study, diagram, map), short, broad, mathematical, fill in the blanks, true/false, matching, practical, assertion-reason, ordering, numeric, programming, grammar, translation, and user-defined custom types |
 | 9 Rich text | Done | Tiptap JSON: Bengali/English, bold/italic/underline, sup/sub, fonts, sizes, colors, alignment, lists, tables, images (URL or Cloudinary), LaTeX formulas |
 | 10 Question bank | Done | Search, filters, sort, pagination, bulk archive/restore/delete/edit, duplicate detection, favorites, history with restore, add to paper. **Limit:** the latest 1000 questions are loaded and searched in the browser |
-| 11 AI generator | Basic | Cloud Function calling Gemini, rate limited, plan credits, editable before saving, key stays on the server. Pasted text or `.txt` only. Not exercised |
+| 11 AI generator | Basic | Default: the browser calls Google Gemini with the user's own free key (no Cloud Functions, no billing; key kept in that browser only; usable models are read from the key and tried in order, so retired model names cannot break it). `VITE_AI_MODE=functions` keeps the original Cloud Function (rate limited, plan credits). Editable before saving. Pasted text or `.txt` only |
 | 12 Import | Basic | CSV, XLSX, XLS (column mapping, type mapping, validation, duplicate detection, error report CSV, history); TXT, DOCX, PDF read as MCQ-format text. Formatting and images inside imported files are **not** preserved; rows that cannot be read are reported, not dropped silently. PDF reading loads pdf.js from a CDN and depends on the PDF |
 | 13 Live preview | Done | Split screen, real pages with header, footer and page numbers |
 | 14 Design studio, templates | Done | 9 ready-made templates, every design option, save/duplicate/edit/delete own templates |
@@ -108,7 +109,7 @@ Every document that belongs to an institution carries `institutionId`, `createdB
 - Papers are editable only while `draft`; reviewers and publishers can only change status. Teachers read their own papers plus approved/published ones.
 - Invitations require a verified email; institution plan and `aiUsed` cannot be changed by clients.
 - Each rules write checks the caller's membership with one document lookup, and batches are kept small (a rules limit of 20 lookups per batch).
-- **Known gaps:** plan limits for papers/questions/members/exports are enforced in the browser (AI credits are enforced on the server); the rules have not been tested in the emulator; there is no automatic malware scan of uploads.
+- **Known gaps:** plan limits for papers/questions/members/exports are enforced in the browser (AI credits are enforced on the server only in `functions` mode; the default free mode has no credit limit); the rules have not been tested in the emulator; there is no automatic malware scan of uploads.
 
 ## 7. Manual test checklist (spec section 27)
 
@@ -124,7 +125,7 @@ Run with two accounts and two institutions, ideally on the Firebase emulator fir
 | Answering rule | Section "answer any 4 of 6" with one compulsory | Section marks follow the rule |
 | Bank | Search, filter, favorite, archive, duplicate, history restore | As described |
 | Import | CSV with one bad row, an MCQ text file | Valid rows imported, bad row listed in the error report |
-| AI | Deploy the function, generate 3 MCQ | Drafts appear, edit, save to bank |
+| AI | Paste a free Gemini key (README 3c), generate 3 MCQ | Drafts appear, edit, save to bank |
 | Templates, studio | Apply each template, save a custom one | Preview changes immediately |
 | Bengali PDF | Print view, Save as PDF | Pages match preview, conjuncts and digits correct |
 | Word | Export paper and key | Opens in Word, Bengali readable |
