@@ -319,7 +319,7 @@ export default {
  "Left column": "বাম কলাম",
  "Left margin (mm)": "বাম মার্জিন (মিমি)",
  "Light": "হালকা",
- "Limits and prices are configured in src/constants/plans.js. Payments run through a server function and are confirmed by the provider before the plan changes.": "সীমা ও মূল্য src/constants/plans.js ফাইলে ঠিক করা হয়। পেমেন্ট সার্ভার ফাংশনের মাধ্যমে চলে এবং প্রোভাইডার নিশ্চিত করার পরেই প্ল্যান বদলায়।",
+ "Choose the plan that fits your needs and unlock more features for a better experience.": "আপনার প্রয়োজন অনুযায়ী প্ল্যান বেছে নিন এবং আরও উন্নত অভিজ্ঞতার জন্য উপভোগ করুন বাড়তি সুবিধা ও ফিচার।",
  "Line height": "লাইনের উচ্চতা",
  "Load a .txt file": ".txt ফাইল নিন",
  "Logo (image address)": "লোগো (ছবির ঠিকানা)",
