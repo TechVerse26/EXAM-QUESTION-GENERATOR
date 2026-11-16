@@ -75,7 +75,7 @@ export default function Subscription() {
           </tbody>
         </table>
       </section>
-      <p className="hint mt-3">{t('Limits and prices are configured in src/constants/plans.js. Payments run through a server function and are confirmed by the provider before the plan changes.')}</p>
+      <p className="hint mt-3">{t('Choose the plan that fits your needs and unlock more features for a better experience.')}</p>
     </div>
   );
 }
